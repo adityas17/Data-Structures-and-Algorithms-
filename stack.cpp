@@ -1,13 +1,14 @@
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 using namespace std;
 
 struct Stack{
     int size;
     int Top;
-    int *s;
+    char *s;
 };
 
 void push(struct Stack *st, int x){
@@ -67,18 +68,49 @@ int isFull(struct Stack st){
     return 0;
 }
 
+int isOperand(char x){
+    if(x == '+' || x == '-' || x == '*' || x == '/')
+        return 0;
+    return 1;
+}
+
+int pre(char x){
+    if(x == '+' || x == '-')
+        return 1;
+    else if(x == '*' || x == '/')
+        return 2;
+    return 0;
+}
+
+char * convert(char *infix){
+    struct Stack st;
+    st.size = strlen(infix);
+    st.s = new char[st.size];
+    char *postfix = new char[strlen(infix) + 1];
+    int i=0,j=0;
+    while(infix[i]!='\0'){
+        if(isOperand(infix[i])){
+            postfix[j++] = infix[i++];
+        }
+        else{
+            if(pre(infix[i])>pre(stackTop(&st))){
+                push(&st,infix[i++]);
+            }
+            else{
+                postfix[j++] = pop(&st);
+            }
+        }
+    }
+    while(!isEmpty(st)){
+        postfix[j++] = pop(&st);
+    }
+    postfix[j] = '\0';
+
+    return postfix;
+}
+
 int main()
 {
-    struct Stack st;
-    printf("Enter the size of the stack\n");
-    scanf("%d",&st.size);
-    st.s = new int[st.size];
-    st.Top = -1;
-    push(&st,2);
-    push(&st,4);
-    push(&st,5);
-    push(&st,6);
-    push(&st,2);
-    printf("%d \n",stackTop(&st));
-    Display(&st);
+    char exp[] ="a+b*c-d/e";
+    printf("%s ",convert(exp));
 }
