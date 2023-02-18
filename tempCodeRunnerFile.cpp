@@ -1,3 +1,2 @@
-    {
-            printf("%d",a[i])
-        }
+Dequeue(q);
+    // Dequeue(q);
